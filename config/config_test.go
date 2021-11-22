@@ -18,6 +18,11 @@ server_config:
 `
 )
 
+const (
+	fileNameNonYaml = "config-non-yaml.txt"
+	fileDataNonYaml = `This is a text file`
+)
+
 func TestMain(m *testing.M) {
 	// create temporary file
 	f, err := os.Create(fileName)
@@ -29,13 +34,24 @@ func TestMain(m *testing.M) {
 	// write data to file
 	f.Write([]byte(fileData))
 
-	os.Exit(m.Run())
+	// create temporary file
+	f1, err := os.Create(fileNameNonYaml)
+	if err != nil {
+		panic(err)
+	}
+	defer f1.Close()
+
+	// write data to file
+	f1.Write([]byte(fileDataNonYaml))
+
+	testRunCode := m.Run()
+	os.Remove(f.Name())
+	os.Remove(f1.Name())
+
+	os.Exit(testRunCode)
 }
 
 func TestLoadConfigFromFile(t *testing.T) {
-	defer func() {
-		os.Remove(fileName)
-	}()
 	tests := []struct {
 		name string
 		give string
@@ -44,6 +60,11 @@ func TestLoadConfigFromFile(t *testing.T) {
 		{
 			name: "file not present",
 			give: "no-file.yaml",
+			want: nil,
+		},
+		{
+			name: "non-yaml file",
+			give: fileNameNonYaml,
 			want: nil,
 		},
 		{

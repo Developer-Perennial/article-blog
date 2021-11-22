@@ -1,9 +1,11 @@
 package app
 
 import (
+	"context"
 	"github.com/DevPer/article-blog/internal/constants"
 	"os"
 	"testing"
+	"time"
 )
 
 const (
@@ -13,7 +15,7 @@ env: dev
 
 server_config:
   host: 0.0.0.0
-  port: 8080
+  port: 9090
 
 db_config:
   username: root
@@ -37,13 +39,13 @@ func TestMain(m *testing.M) {
 	// write data to file
 	f.Write([]byte(fileData))
 
-	os.Exit(m.Run())
+	testRunCode := m.Run()
+	os.Remove(f.Name())
+
+	os.Exit(testRunCode)
 }
 
 func TestInit(t *testing.T){
-	defer func() {
-		os.Remove(fileName)
-	}()
 	tests := []struct{
 		name string
 		give string
@@ -90,5 +92,24 @@ func TestInit(t *testing.T){
 				tt.cleanupFunc()
 			}
 		})
+	}
+}
+
+func TestApp(t *testing.T) {
+	app, _ := Init(fileName)
+
+	sigChan := make(chan struct{})
+	time.AfterFunc(2 * time.Second, func() {
+		sigChan <- struct{}{}
+	})
+
+	go func() {
+		_ = app.Run(context.Background())
+	}()
+	<-sigChan
+
+	err := app.ShutDown(nil)
+	if err != nil{
+		t.Errorf("Unexpected error")
 	}
 }
