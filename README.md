@@ -34,4 +34,5 @@ This makes the application **independent of the host OS**. This has been verifie
 The API collection, `API-Collection.json`, is provided at the project root. One may import this to get the list of API endpoints with default configurations to run on localhost, once the application is ready.
 
 3. Overall code statement coverage >70% with file coverage at 90%.
+
 ![Alt text](./coverage.png?raw=true "Code Coverage")
