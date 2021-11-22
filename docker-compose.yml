@@ -1,0 +1,24 @@
+version: "3.2"
+services:
+  mysqldb:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: "blog_system"
+
+  article-blog:
+    depends_on:
+      - mysqldb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: article-blog:1.0
+    restart: always
+    ports:
+      - target: "8080"
+#       Mention port to be exposed on the host system
+        published: "8080" # <- put wanted server port here
+    environment:
+#     Environment variable to the mysql service::provides SQL DB
+      DB_CONFIG_HOST: "mysqldb"
