@@ -27,8 +27,12 @@ article-blog:
 ```
 
 Since the entire server is started in a Docker container, the only pre-requisite is the installation of docker on the host system along with docker-compose, which usually is installed with Docker.
-This makes the application **independent of the host OS**.
+This makes the application **independent of the host OS**. This has been verified in a MacOS system.
 
 2. API Collection:
 
 The API collection, `API-Collection.json`, is provided at the project root. One may import this to get the list of API endpoints with default configurations to run on localhost, once the application is ready.
+
+3. Overall code statement coverage >70% with file coverage at 90%.
+
+![Alt text](./coverage.png?raw=true "Code Coverage")
